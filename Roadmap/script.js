@@ -42,7 +42,7 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
   }
 
   try {
-    const response = await axios.post("http://localhost:3000/api/login", {
+    const response = await axios.post("https://roadmap-sandy.vercel.app/api/login", {
       name: username,
     });
 
