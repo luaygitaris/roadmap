@@ -11,6 +11,11 @@ app.use("/api/materials", require("./Routes/routesMateri"));
 app.use("/api/login", require("./Routes/routesLogin"));
 app.use("/api/progress", require("./Routes/routesProgress"));
 
+app.get('/', (req, res) => {
+  res.send('API Working');
+});
+
+
 app.listen(port, () => {
   console.log(`Server berjalan di http://localhost:${port}`);
 });
