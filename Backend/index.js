@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -15,7 +15,12 @@ app.get('/', (req, res) => {
   res.send('API Working');
 });
 
+// Export the Express app for Vercel
+module.exports = app;
 
-app.listen(port, () => {
-  console.log(`Server berjalan di http://localhost:${port}`);
-});
+// Only listen when not in Vercel environment
+if (process.env.VERCEL !== '1') {
+  app.listen(port, () => {
+    console.log(`Server berjalan di http://localhost:${port}`);
+  });
+}

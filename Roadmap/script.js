@@ -42,12 +42,11 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
   }
 
   try {
-    const response = await axios.post("https://roadmap-sandy.vercel.app/api/login", {
+    const response = await axios.post("http://localhost:3000/api/login", {
       name: username,
     });
+
     userId = response.data.userId;
-    console.log(response);
-    
 
     localStorage.setItem("userId", userId);
 
@@ -60,6 +59,14 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     alert("Login failed. Please try again.");
   }
 });
+
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  localStorage.removeItem("userId");
+  userId = null;
+  document.getElementById("roadmap").classList.add("hidden");
+  document.getElementById("container-login").classList.remove("hidden");
+});
+
 
 document.getElementById("logoutBtn").addEventListener("click", async () => {
   localStorage.removeItem("userId");
