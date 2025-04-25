@@ -1,0 +1,2264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link href="./src/output.css" rel="stylesheet" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet" />
+    <style>
+      svg text tspan {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeSpeed;
+      }
+      svg > g[data-type="topic"],
+      svg > g[data-type="subtopic"],
+      svg g[data-type="link-item"],
+      svg > g[data-type="button"],
+      svg > g[data-type="resourceButton"],
+      svg > g[data-type="todo-checkbox"],
+      svg > g[data-type="todo"],
+      svg > g[data-type="checklist"] > g[data-type="checklist-item"] > rect {
+        cursor: pointer;
+      }
+      svg > g[data-type="topic"]:hover > rect {
+        fill: var(--hover-color);
+      }
+      svg > g[data-type="subtopic"]:hover > rect {
+        fill: var(--hover-color);
+      }
+      svg g[data-type="button"]:hover,
+      svg g[data-type="link-item"]:hover,
+      svg g[data-type="resourceButton"]:hover,
+      svg g[data-type="todo-checkbox"]:hover {
+        opacity: 0.8;
+      }
+      svg
+        g[data-type="checklist"]
+        > g[data-type="checklist-item"]
+        > rect:hover {
+        fill: #cbcbcb !important;
+      }
+      svg .done rect {
+        fill: #cbcbcb !important;
+      }
+      svg .done text,
+      svg .skipped text {
+        text-decoration: line-through;
+      }
+      svg > g[data-type="topic"].learning > rect + text,
+      svg > g[data-type="topic"].done > rect + text {
+        fill: #000;
+      }
+      svg .done text[fill="#ffffff"] {
+        fill: #000;
+      }
+      svg > g[data-type="subtipic"].done > rect + text,
+      svg > g[data-type="subtipic"].learning > rect + text {
+        fill: #cbcbcb;
+      }
+      svg .learning rect {
+        fill: #dad1fd !important;
+      }
+      svg .learning text {
+        text-decoration: underline;
+      }
+      svg .skipped rect {
+        fill: #496b69 !important;
+      }
+      code {
+        background: #1e1e3f;
+        color: #9efeff;
+        padding: 3px 5px;
+        font-size: 14px;
+        border-radius: 3px;
+      }
+      svg .clickable-group {
+        cursor: pointer;
+      }
+      svg .clickable-group:hover > [fill="rgb(65,53,214)"] {
+        fill: #232381;
+        stroke: #232381;
+      }
+      svg .clickable-group:hover > [fill="rgb(255,255,0)"] {
+        fill: #d6d700;
+      }
+      svg .clickable-group:hover > [fill="rgb(255,229,153)"] {
+        fill: #f3c950;
+      }
+      svg .clickable-group:hover > [stroke="rgb(255,229,153)"] {
+        stroke: #f3c950;
+      }
+      svg .clickable-group:hover > [fill="rgb(153,153,153)"] {
+        fill: #646464;
+      }
+      svg .clickable-group:hover > [fill="rgb(255,255,255)"] {
+        fill: #d7d7d7;
+      }
+      svg .clickable-group:hover > [fill="rgb(255,255,221)"] {
+        fill: #e5e5be;
+      }
+      svg .clickable-group:hover > [fill="rgb(255,217,102)"] {
+        fill: #d9b443;
+      }
+      svg .done rect {
+        fill: #cbcbcb !important;
+      }
+      svg .done rect[stroke="rgb(255,229,153)"] {
+        stroke: #cbcbcb !important;
+      }
+      svg .done text,
+      svg .skipped text {
+        text-decoration: line-through;
+      }
+      svg .learning rect {
+        fill: #dad1fd !important;
+      }
+      svg .skipped rect {
+        fill: #496b69 !important;
+      }
+      svg .learning rect[fill="rgb(51,51,51)"] + text,
+      svg .done rect[fill="rgb(51,51,51)"] + text {
+        fill: #000 !important;
+      }
+      svg .learning text {
+        text-decoration: underline;
+      }
+      svg .clickable-group.done[data-group-id^="check:"] rect {
+        fill: gray !important;
+        stroke: gray !important;
+      }
+      .clickable-group rect {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+      svg .removed rect {
+        fill: #fdfdfd !important;
+        stroke: #c4c4c4 !important;
+      }
+      svg .removed text {
+        fill: #9c9c9c !important;
+      }
+      svg .removed g,
+      svg .removed circle,
+      svg .removed path {
+        opacity: 0;
+      }
+      [style*="--aspect-ratio"] > :first-child {
+        width: 100%;
+      }
+      [style*="--aspect-ratio"] > img {
+        height: auto;
+      }
+      @supports (--custom: property) {
+        [style*="--aspect-ratio"] {
+          position: relative;
+        }
+        [style*="--aspect-ratio"]:before {
+          content: "";
+          display: block;
+          padding-bottom: calc(100% / (var(--aspect-ratio)));
+        }
+        [style*="--aspect-ratio"] > :first-child {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 100%;
+        }
+      }
+    </style>
+    <style>
+      .path-container {
+        position: absolute;
+        width: 100%;
+        height: auto;
+        margin-top: 20px;
+      }
+      .path-title {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+      }
+      .path-title p {
+        font-size: 1.5rem;
+        margin: 0;
+      }
+      .path-lines {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      .path-line {
+        border-left: 4px dashed #2b78e4;
+        height: 40px;
+      }
+      .path-line.solid {
+        border-left-style: solid;
+        height: 60px;
+      }
+      svg {
+        width: 100%;
+        height: auto;
+      }
+    </style>
+    <script src="./script.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body
+    class="flex flex-col px-5 lg:px-10 text-[10px] md:text-[12px] lg:text-[15px]"
+    style="font-family: balsamiq">
+    <div id="container-login">
+      <h1 class="text-3xl font-bold mb-5">Login</h1>
+      <input
+        id="username"
+        class="mb-5 px-4 py-2 border border-gray-300 rounded"
+        type="text"
+        placeholder="Enter your name" />
+      <button id="loginBtn" class="bg-blue-500 text-white px-4 py-2 rounded">
+        Login
+      </button>
+    </div>
+    <div id="roadmap" class="hidden">
+      <div class="flex justify-between items-center mb-5">
+        <h2 class="text-2xl font-bold">Frontend Roadmap</h2>
+        <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded">
+          Logout
+        </button>
+      </div>
+      <!-- Popup Detail Materi -->
+      <div
+        id="material-detail-popup"
+        class="hidden fixed top-10 md:top-32 lg:top-40 left-10 lg:left-24 bg-white border border-black rounded-lg p-2 lg:p-4 shadow-lg z-50 w-[150px] md:w-[200px] lg:w-[300px]">
+        <div class="relative"></div>
+      </div>
+
+      <!-- Section Satu -->
+      <section
+        style="--aspect-ratio: 0.3488288288288288"
+        class="mt-5 flex aspect-[var(--aspect-ratio)] w-full flex-col justify-center">
+        <div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="-675 -312 1100 3165"
+            style="font-family: balsamiq"
+            version="1.1">
+            <!-- Materi -->
+            <g>
+              <rect
+                x="-653.5314218617622"
+                y="-290.7454122270983"
+                width="350.3"
+                height="121.3"
+                rx="5"
+                fill="white"
+                stroke="black"
+                stroke-width="2.7"></rect>
+              <g>
+                <circle
+                  cx="-619.3814218617622"
+                  cy="-263.59541222709834"
+                  r="9.5"
+                  fill="#874efe"
+                  zIndex="1"
+                  id="icon-link"></circle>
+                <path
+                  d="M-623.3814218617622 -263.59541222709834L-620.8814218617622 -260.59541222709834 -615.8814218617622 -265.59541222709834"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"></path>
+                <text
+                  x="-601.8814218617622"
+                  y="-261.09541222709834"
+                  text-anchor="left"
+                  dominant-baseline="middle"
+                  font-size="16"
+                  fill="black">
+                  <tspan>Personal Recommendation / Opinion</tspan>
+                </text>
+              </g>
+              <g>
+                <circle
+                  cx="-619.3814218617622"
+                  cy="-231.59541222709834"
+                  r="9.5"
+                  fill="#4f7a28"
+                  zIndex="1"
+                  id="icon-link"></circle>
+                <path
+                  d="M-623.3814218617622 -231.59541222709834L-620.8814218617622 -228.59541222709834 -615.8814218617622 -233.59541222709834"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"></path>
+                <text
+                  x="-601.8814218617622"
+                  y="-229.09541222709834"
+                  text-anchor="left"
+                  dominant-baseline="middle"
+                  font-size="16"
+                  fill="black">
+                  <tspan>Alternative Option / Pick this or purple</tspan>
+                </text>
+              </g>
+              <g>
+                <circle
+                  cx="-619.3814218617622"
+                  cy="-199.59541222709834"
+                  r="9.5"
+                  fill="#929292"
+                  zIndex="1"
+                  id="icon-link"></circle>
+                <path
+                  d="M-623.3814218617622 -199.59541222709834L-620.8814218617622 -196.59541222709834 -615.8814218617622 -201.59541222709834"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"></path>
+                <text
+                  x="-601.8814218617622"
+                  y="-197.09541222709834"
+                  text-anchor="left"
+                  dominant-baseline="middle"
+                  font-size="16"
+                  fill="black">
+                  <tspan>Order not strict / Learn anytime</tspan>
+                </text>
+              </g>
+            </g>
+            <g>
+              <rect
+                x="46.84718479195076"
+                y="-286.80106699547105"
+                width="354"
+                height="140.3"
+                rx="5"
+                fill="#FFFFFf"
+                stroke="#000000"
+                stroke-width="2.7"></rect>
+              <text fill="black">
+                <tspan
+                  x="64.19718479195076"
+                  y="-258.0510669954711"
+                  dy="0"
+                  text-anchor="start"
+                  dominant-baseline="middle"
+                  font-size="17">
+                  Find the detailed version of this roadmap
+                </tspan>
+                <tspan
+                  x="64.19718479195076"
+                  y="-258.0510669954711"
+                  dy="25.5"
+                  text-anchor="start"
+                  dominant-baseline="middle"
+                  font-size="17">
+                  along with other similar roadmaps
+                </tspan>
+              </text>
+              <g data-link="https://roadmap.sh" data-type="button">
+                <rect
+                  x="60.050559204750904"
+                  y="-204.8155035777258"
+                  width="326.3"
+                  height="46.3"
+                  rx="5"
+                  fill="#4136D6"
+                  stroke="#4136D6"
+                  stroke-width="2.7"></rect>
+                <text
+                  x="223.2005592047509"
+                  y="-179.51550357772578"
+                  text-anchor="middle"
+                  dominant-baseline="middle"
+                  font-size="17"
+                  fill="#ffffff">
+                  <tspan>roadmap.sh</tspan>
+                </text>
+              </g>
+            </g>
+            <g data-type="button">
+              <rect
+                x="-653.5314218617622"
+                y="-152.37969257809786"
+                width="348.3"
+                height="46.3"
+                rx="5"
+                fill="#232323"
+                stroke="#232323"
+                stroke-width="2.7"></rect>
+              <text
+                x="-479.3814218617622"
+                y="-127.07969257809785"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#ffffff">
+                <tspan>Visit Beginner Friendly Version</tspan>
+              </text>
+            </g>
+            <g>
+              <text
+                x="-152"
+                y="-66.59925177765109"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="28"
+                fill="black">
+                <tspan>Front-end</tspan>
+              </text>
+            </g>
+            <g>
+              <rect
+                x="-228.15"
+                y="69.62030742190214"
+                width="152.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="-152"
+                y="94.92030742190215"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>Internet</tspan>
+              </text>
+            </g>
+            <g id="material-container"></g>
+            <g id="material-container2"></g>
+            <g id="material-container3"></g>
+            <g id="material-container4"></g>
+            <g id="material-container5"></g>
+            <g id="material-container6"></g>
+            <g id="material-container7"></g>
+            <g id="material-container8"></g>
+            <g id="material-container9"></g>
+            <g id="material-container10"></g>
+            <g id="material-container11"></g>
+            <g id="material-container12"></g>
+            <g id="material-container13"></g>
+            <g id="material-container14"></g>
+            <g id="material-container15"></g>
+            <g id="material-container16"></g>
+            <g id="material-container17"></g>
+            <g id="material-container18"></g>
+            <g id="material-container19"></g>
+            <g id="material-container20"></g>
+            <g id="material-container21"></g>
+            <g id="material-container22"></g>
+            <g id="material-container23"></g>
+            <g id="material-container24"></g>
+            <g id="material-container25"></g>
+            <g id="material-container26"></g>
+            <g>
+              <rect
+                x="-600.5314218617622"
+                y="261.62030742190217"
+                width="170.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="-515.3814218617622"
+                y="286.9203074219021"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>HTML</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="ZhJhf1M2OphYbEmduFq-9"
+              data-type="topic"
+              data-title="CSS"
+              data-parent-id="ODcfFEorkfJNupoQygM53"
+              data-parent-title="JavaScript">
+              <rect
+                x="-313.8346726695696"
+                y="311.0721445947545"
+                width="124.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="-251.68467266956964"
+                y="336.37214459475445"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>CSS</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="ODcfFEorkfJNupoQygM53"
+              data-type="topic"
+              data-title="JavaScript">
+              <rect
+                x="-314.83467266956956"
+                y="463.8654932607581"
+                width="124.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="-252.68467266956958"
+                y="489.16549326075807"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>JavaScript</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="MXnFhZlNB1zTsBFDyni9H"
+              data-type="topic"
+              data-title="VCS Hosting"
+              data-parent-id="NIY7c4TQEEHx0hATu-k5C"
+              data-parent-title="Version Control Systems">
+              <rect
+                x="246.24428364498542"
+                y="463.8654932607581"
+                width="150.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="321.3942836449854"
+                y="489.16549326075807"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>VCS Hosting</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="NIY7c4TQEEHx0hATu-k5C"
+              data-type="topic"
+              data-title="Version Control Systems"
+              data-parent-id="ODcfFEorkfJNupoQygM53"
+              data-parent-title="JavaScript">
+              <rect
+                x="-87.75571635501458"
+                y="464.0721445947545"
+                width="244.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="34.39428364498542"
+                y="489.37214459475445"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>Version Control Systems</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="IqvS1V-98cxko3e9sBQgP"
+              data-type="topic"
+              data-title="Package Managers"
+              data-parent-id="MXnFhZlNB1zTsBFDyni9H"
+              data-parent-title="VCS Hosting">
+              <rect
+                x="-39.75571635501458"
+                y="643.7234598570146"
+                width="199.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="59.89428364498542"
+                y="669.0234598570146"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>Package Managers</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="eXezX7CVNyC1RuyU_I4yP"
+              data-type="topic"
+              data-title="Pick a Framework"
+              data-parent-id="IqvS1V-98cxko3e9sBQgP"
+              data-parent-title="Package Managers">
+              <rect
+                x="-39.75571635501458"
+                y="818.0748298360628"
+                width="199.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="59.89428364498542"
+                y="843.3748298360628"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>Pick a Framework</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="XDTD8el6OwuQ55wC-X4iV"
+              data-type="topic"
+              data-title="Writing CSS"
+              data-parent-id="eXezX7CVNyC1RuyU_I4yP"
+              data-parent-title="Pick a Framework">
+              <rect
+                x="-447.3484751538557"
+                y="819.0748298360628"
+                width="168.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="-363.1984751538557"
+                y="844.3748298360628"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>Writing CSS</tspan>
+              </text>
+            </g>
+            <g data-node-id="LEijbLyxg4RyutKEM2Y5g" data-type="vertical">
+              <line
+                x1="-152"
+                y1="-202.5992517776511"
+                x2="-152"
+                y2="-100.59925177765109"
+                style="
+                  stroke-linecap: round;
+                  stroke-width: 3.5;
+                  stroke: #0a33ff;
+                  stroke-dasharray: 0.8 8;
+                "></line>
+            </g>
+            <g
+              data-node-id="nPg_YWpMJtlhU2t2UD_6B"
+              data-type="topic"
+              data-title="CSS Architecture"
+              data-parent-id="XDTD8el6OwuQ55wC-X4iV"
+              data-parent-title="Writing CSS">
+              <rect
+                x="-449.8484751538557"
+                y="940.7234598570145"
+                width="173.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="-363.1984751538557"
+                y="966.0234598570145"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>CSS Architecture</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="UTW1pP59dUehuf0zeHXqL"
+              data-type="topic"
+              data-title="CSS Preprocessors"
+              data-parent-id="nPg_YWpMJtlhU2t2UD_6B"
+              data-parent-title="CSS Architecture">
+              <rect
+                x="-198.33921216755553"
+                y="940.7234598570145"
+                width="207.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="-94.68921216755552"
+                y="966.0234598570145"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>CSS Preprocessors</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="i9z0stM4uKu27Cz6NIgNX"
+              data-type="topic"
+              data-title="Build Tools"
+              data-parent-id="UTW1pP59dUehuf0zeHXqL"
+              data-parent-title="CSS Preprocessors">
+              <rect
+                x="242.74428364498542"
+                y="1210.2597604780044"
+                width="157.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="321.3942836449854"
+                y="1235.5597604780046"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>Build Tools</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="9VcGfDBBD8YcKatj4VcH1"
+              data-type="topic"
+              data-title="Linters and Formatters"
+              data-parent-id="i9z0stM4uKu27Cz6NIgNX"
+              data-parent-title="Build Tools">
+              <rect
+                x="-47.5354599140368"
+                y="1184.5547610770714"
+                width="222.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="63.6145400859632"
+                y="1209.8547610770715"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>Linters and Formatters</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="hkSc_1x09m7-7BO7WzlDT"
+              data-type="topic"
+              data-title="Module Bundlers"
+              data-parent-id="i9z0stM4uKu27Cz6NIgNX"
+              data-parent-title="Build Tools">
+              <rect
+                x="-47.5354599140368"
+                y="1240.2597604780044"
+                width="222.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="63.6145400859632"
+                y="1265.5597604780046"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>Module Bundlers</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="igg4_hb3XE3vuvY8ufV-4"
+              data-type="topic"
+              data-title="Testing"
+              data-parent-id="i9z0stM4uKu27Cz6NIgNX"
+              data-parent-title="Build Tools">
+              <rect
+                x="242.74428364498542"
+                y="1397.057960645082"
+                width="157.3"
+                height="48.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="321.3942836449854"
+                y="1423.3579606450821"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>Testing</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="U5mD5FmVx7VWeKxDpQxB5"
+              data-type="topic"
+              data-title="Authentication Strategies"
+              data-parent-id="igg4_hb3XE3vuvY8ufV-4"
+              data-parent-title="Testing">
+              <rect
+                x="-266.14135616408186"
+                y="1485.1110367386816"
+                width="327.3"
+                height="47.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="-102.49135616408188"
+                y="1510.9110367386818"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>Authentication Strategies</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="RDWbG3Iui6IPgp0shvXtg"
+              data-type="topic"
+              data-title="Web Security Basics"
+              data-parent-id="U5mD5FmVx7VWeKxDpQxB5"
+              data-parent-title="Authentication Strategies">
+              <rect
+                x="-640.0918542150819"
+                y="1385.5780876674366"
+                width="219.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="-530.4418542150819"
+                y="1410.8780876674368"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>Web Security Basics</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="ruoFa3M4bUE3Dg6GXSiUI"
+              data-type="topic"
+              data-title="Web Components"
+              data-parent-id="RDWbG3Iui6IPgp0shvXtg"
+              data-parent-title="Web Security Basics">
+              <rect
+                x="-642.0918542150819"
+                y="1630.007291456067"
+                width="223.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="-530.4418542150819"
+                y="1655.307291456067"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>Web Components</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="hwPOGT0-duy3KfI8QaEwF"
+              data-type="topic"
+              data-title="Type Checkers"
+              data-parent-id="ruoFa3M4bUE3Dg6GXSiUI"
+              data-parent-title="Web Components">
+              <rect
+                x="-294.96103525119565"
+                y="1630.007291456067"
+                width="165.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="-212.31103525119568"
+                y="1655.307291456067"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>Type Checkers</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="Cxspmb14_0i1tfw-ZLxEu"
+              data-type="topic"
+              data-title="SSR"
+              data-parent-id="hwPOGT0-duy3KfI8QaEwF"
+              data-parent-title="Type Checkers">
+              <rect
+                x="-73.15"
+                y="1780.0024214737566"
+                width="105.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="-20.5"
+                y="1805.3024214737568"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>SSR</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="L7AllJfKvClaam3y-u6DP"
+              data-type="topic"
+              data-title="GraphQL"
+              data-parent-id="Cxspmb14_0i1tfw-ZLxEu"
+              data-parent-title="SSR">
+              <rect
+                x="-298.4082952055722"
+                y="1937.5881074587564"
+                width="155.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="-220.7582952055722"
+                y="1962.8881074587566"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>GraphQL</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="n0q32YhWEIAUwbGXexoqV"
+              data-type="topic"
+              data-title="Static Site Generators"
+              data-parent-id="PoM77O2OtxPELxfrW1wtl"
+              data-parent-title="PWAs">
+              <rect
+                x="-47.5354599140368"
+                y="2148.7394186454862"
+                width="211.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="58.1145400859632"
+                y="2174.0394186454864"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>Static Site Generators</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="PoM77O2OtxPELxfrW1wtl"
+              data-type="topic"
+              data-title="PWAs"
+              data-parent-id="L7AllJfKvClaam3y-u6DP"
+              data-parent-title="GraphQL">
+              <rect
+                x="-298.4082952055722"
+                y="2148.7394186454862"
+                width="155.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="-220.7582952055722"
+                y="2174.0394186454864"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>PWAs</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="VOGKiG2EZVfCBAaa7Df0W"
+              data-type="topic"
+              data-title="Mobile Apps"
+              data-parent-id="n0q32YhWEIAUwbGXexoqV"
+              data-parent-title="Static Site Generators">
+              <rect
+                x="253.27382104841215"
+                y="2149.1834900403837"
+                width="141.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="323.92382104841215"
+                y="2174.483490040384"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>Mobile Apps</tspan>
+              </text>
+            </g>
+            <g
+              data-node-id="KMA7NkxFbPoUDtFnGBFnj"
+              data-type="topic"
+              data-title="Desktop Apps"
+              data-parent-id="VOGKiG2EZVfCBAaa7Df0W"
+              data-parent-title="Mobile Apps">
+              <rect
+                x="-134.30026904256627"
+                y="2455.1055807169028"
+                width="151.3"
+                height="46.3"
+                rx="5"
+                fill="#fdff00"
+                stroke="black"
+                stroke-width="2.7"
+                style="--hover-color: #d6d700"></rect>
+              <text
+                x="-58.650269042566265"
+                y="2480.405580716903"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#000000">
+                <tspan>Desktop Apps</tspan>
+              </text>
+            </g>
+            <g
+              data-link="https://roadmap.sh/typescript"
+              data-node-id="OIcmPSbdsuWapb6HZ4BEi"
+              data-type="button">
+              <rect
+                x="-249.33060209288814"
+                y="2680.6589001088355"
+                width="129.3"
+                height="46.3"
+                rx="5"
+                fill="#4136D6"
+                stroke="#4136D6"
+                stroke-width="2.7"></rect>
+              <text
+                x="-184.68060209288814"
+                y="2705.9589001088357"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#FFf">
+                <tspan>TypeScript</tspan>
+              </text>
+            </g>
+            <g
+              data-link="https://roadmap.sh/nodejs"
+              data-node-id="qXKNK_IsGS8-JgLK-Q9oU"
+              data-type="button">
+              <rect
+                x="-112.77638684584417"
+                y="2680.6589001088355"
+                width="116.3"
+                height="46.3"
+                rx="5"
+                fill="#4136D6"
+                stroke="#4136D6"
+                stroke-width="2.7"></rect>
+              <text
+                x="-54.626386845844166"
+                y="2705.9589001088357"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#FFFFFf">
+                <tspan>Nodejs</tspan>
+              </text>
+            </g>
+            <g data-node-id="RLtk1C3gofHnLJ17x3o5b" data-type="vertical">
+              <line
+                x1="-61.75829520557221"
+                y1="2748.163242675726"
+                x2="-61.75829520557221"
+                y2="2833.163242675726"
+                style="
+                  stroke-linecap: round;
+                  stroke-width: 3.5;
+                  stroke: #2b78e4;
+                  stroke-dasharray: 0.8 8;
+                "></line>
+            </g>
+            <g
+              data-link="https://roadmap.sh/best-practices/frontend-performance"
+              data-node-id="mB3hZvAfRr6kCEbF6t-yz"
+              data-type="button">
+              <rect
+                x="-353.9082952055722"
+                y="2254.1834900403837"
+                width="266.3"
+                height="46.3"
+                rx="5"
+                fill="#4136d6"
+                stroke="#4136d6"
+                stroke-width="2.7"></rect>
+              <text
+                x="-220.7582952055722"
+                y="2279.483490040384"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#ffffff">
+                <tspan>Performance Best Practices</tspan>
+              </text>
+            </g>
+            <g data-node-id="y8mpS-q8TCwp3k23enpf7" data-type="paragraph">
+              <rect
+                x="-644.1668967945566"
+                y="604.0721445947545"
+                width="365"
+                height="162.3"
+                rx="5"
+                fill="#ebebeb"
+                stroke="TRANSPARENt"
+                stroke-width="2.7"></rect>
+              <text fill="black">
+                <tspan
+                  x="-626.8168967945566"
+                  y="632.8221445947545"
+                  dy="0"
+                  text-anchor="start"
+                  dominant-baseline="middle"
+                  font-size="17">
+                  We’ve trimmed down the CSS part for the
+                </tspan>
+                <tspan
+                  x="-626.8168967945566"
+                  y="632.8221445947545"
+                  dy="25.5"
+                  text-anchor="start"
+                  dominant-baseline="middle"
+                  font-size="17">
+                  sake of brevity. You should read about
+                </tspan>
+                <tspan
+                  x="-626.8168967945566"
+                  y="632.8221445947545"
+                  dy="51"
+                  text-anchor="start"
+                  dominant-baseline="middle"
+                  font-size="17">
+                  CSS-in-JS, CSS Modules and Styled
+                </tspan>
+                <tspan
+                  x="-626.8168967945566"
+                  y="632.8221445947545"
+                  dy="76.5"
+                  text-anchor="start"
+                  dominant-baseline="middle"
+                  font-size="17">
+                  Components. Also worth looking at are
+                </tspan>
+                <tspan
+                  x="-626.8168967945566"
+                  y="632.8221445947545"
+                  dy="102"
+                  text-anchor="start"
+                  dominant-baseline="middle"
+                  font-size="17">
+                  Panda CSS, Shadcn UI, Mantine and more.
+                </tspan>
+              </text>
+            </g>
+            <g data-node-id="dnVfC9N76qvTGKO9B-AW7" data-type="label">
+              <text
+                x="-261.4913561640819"
+                y="1566.0166772420591"
+                text-anchor="left"
+                dominant-baseline="auto"
+                font-size="17"
+                fill="black">
+                <tspan>JWT, OAuth, SSO, Basic Auth, Session Auth</tspan>
+              </text>
+            </g>
+            <g data-node-id="qN-6iiXWgn5qSzK3o0Tjo" data-type="legend">
+              <rect
+                x="-653.5314218617622"
+                y="-290.7454122270983"
+                width="350.3"
+                height="121.3"
+                rx="5"
+                fill="white"
+                stroke="black"
+                stroke-width="2.7"></rect>
+              <g
+                data-node-id="NJhQIvMyMD1Cu-JA1UCmJ"
+                data-type="legend-item"
+                data-parent-id="qN-6iiXWgn5qSzK3o0Tjo">
+                <circle
+                  cx="-619.3814218617622"
+                  cy="-263.59541222709834"
+                  r="9.5"
+                  fill="#874efe"
+                  zIndex="1"
+                  id="icon-link"></circle>
+                <path
+                  d="M-623.3814218617622 -263.59541222709834L-620.8814218617622 -260.59541222709834 -615.8814218617622 -265.59541222709834"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"></path>
+                <text
+                  x="-601.8814218617622"
+                  y="-261.09541222709834"
+                  text-anchor="left"
+                  dominant-baseline="middle"
+                  font-size="16"
+                  fill="black">
+                  <tspan>Personal Recommendation / Opinion</tspan>
+                </text>
+              </g>
+
+              <g
+                data-node-id="DMx7rAjVBWMbzjSde-tvp"
+                data-type="legend-item"
+                data-parent-id="qN-6iiXWgn5qSzK3o0Tjo">
+                <circle
+                  cx="-619.3814218617622"
+                  cy="-231.59541222709834"
+                  r="9.5"
+                  fill="#4f7a28"
+                  zIndex="1"
+                  id="icon-link"></circle>
+                <path
+                  d="M-623.3814218617622 -231.59541222709834L-620.8814218617622 -228.59541222709834 -615.8814218617622 -233.59541222709834"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"></path>
+                <text
+                  x="-601.8814218617622"
+                  y="-229.09541222709834"
+                  text-anchor="left"
+                  dominant-baseline="middle"
+                  font-size="16"
+                  fill="black">
+                  <tspan>Alternative Option / Pick this or purple</tspan>
+                </text>
+              </g>
+              <g
+                data-node-id="R9WLhURhPdVNXP7AUTDvR"
+                data-type="legend-item"
+                data-parent-id="qN-6iiXWgn5qSzK3o0Tjo">
+                <circle
+                  cx="-619.3814218617622"
+                  cy="-199.59541222709834"
+                  r="9.5"
+                  fill="#929292"
+                  zIndex="1"
+                  id="icon-link"></circle>
+                <path
+                  d="M-623.3814218617622 -199.59541222709834L-620.8814218617622 -196.59541222709834 -615.8814218617622 -201.59541222709834"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"></path>
+                <text
+                  x="-601.8814218617622"
+                  y="-197.09541222709834"
+                  text-anchor="left"
+                  dominant-baseline="middle"
+                  font-size="16"
+                  fill="black">
+                  <tspan>Order not strict / Learn anytime</tspan>
+                </text>
+              </g>
+            </g>
+            <g data-node-id="yHmHXymPNWwu8p1vvqD3o" data-type="paragraph">
+              <rect
+                x="46.84718479195076"
+                y="-286.80106699547105"
+                width="354"
+                height="140.3"
+                rx="5"
+                fill="#FFFFFf"
+                stroke="#000000"
+                stroke-width="2.7"></rect>
+              <text fill="black">
+                <tspan
+                  x="64.19718479195076"
+                  y="-258.0510669954711"
+                  dy="0"
+                  text-anchor="start"
+                  dominant-baseline="middle"
+                  font-size="17">
+                  Find the detailed version of this roadmap
+                </tspan>
+                <tspan
+                  x="64.19718479195076"
+                  y="-258.0510669954711"
+                  dy="25.5"
+                  text-anchor="start"
+                  dominant-baseline="middle"
+                  font-size="17">
+                  along with other similar roadmaps
+                </tspan>
+              </text>
+            </g>
+            <g
+              data-link="https://roadmap.sh"
+              data-node-id="2zqZkyVgigifcRS1H7F_b"
+              data-type="button">
+              <rect
+                x="60.050559204750904"
+                y="-204.8155035777258"
+                width="326.3"
+                height="46.3"
+                rx="5"
+                fill="#4136D6"
+                stroke="#4136D6"
+                stroke-width="2.7"></rect>
+              <text
+                x="223.2005592047509"
+                y="-179.51550357772578"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#ffffff">
+                <tspan>roadmap.sh</tspan>
+              </text>
+            </g>
+            <g data-node-id="_A1szF2RfITS21ZkihdVU" data-type="label">
+              <text
+                x="-579.4418542150819"
+                y="2772.163242675726"
+                text-anchor="left"
+                dominant-baseline="auto"
+                font-size="17"
+                fill="black">
+                <tspan>Browser APIs</tspan>
+              </text>
+            </g>
+            <g data-node-id="tJHq39GljlEahhhur11NE" data-type="label">
+              <text
+                x="-623.0537077765232"
+                y="2205.382968916314"
+                text-anchor="left"
+                dominant-baseline="auto"
+                font-size="17"
+                fill="black">
+                <tspan>Measure &amp; Improve Perf.</tspan>
+              </text>
+            </g>
+            <g
+              data-link="https://roadmap.sh/full-stack"
+              data-node-id="-sFboM4eFUMVq1tlPl-fV"
+              data-type="button">
+              <rect
+                x="12.408722960661697"
+                y="2680.6589001088355"
+                width="116.3"
+                height="46.3"
+                rx="5"
+                fill="#4136D6"
+                stroke="#4136D6"
+                stroke-width="2.7"></rect>
+              <text
+                x="70.5587229606617"
+                y="2705.9589001088357"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#FFFFFf">
+                <tspan>Fullstack</tspan>
+              </text>
+            </g>
+            <g
+              data-link="/frontend?r=frontend-beginner"
+              data-node-id="MfErpYwkJ0wiWJZEUVfrb"
+              data-type="button">
+              <rect
+                x="-653.5314218617622"
+                y="-152.37969257809786"
+                width="348.3"
+                height="46.3"
+                rx="5"
+                fill="#232323"
+                stroke="#232323"
+                stroke-width="2.7"></rect>
+              <text
+                x="-479.3814218617622"
+                y="-127.07969257809785"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="17"
+                fill="#ffffff">
+                <tspan>Visit Beginner Friendly Version</tspan>
+              </text>
+            </g>
+            <!-- Checklist -->
+
+            <!-- Line / garis -->
+            <path
+              d="M-152,-32.59925177765109 C-152,17.835527822125528 -152,17.835527822125528 -152,68.27030742190215"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="tNkdpQjYu72eFK9f_W0RO"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M-74.5,92.77030742190215 C8.370513405812147,92.77030742190215 8.370513405812147,-70.22969257809785 91.2410268116243,-70.22969257809785"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="ronTDxAvatzbk4n5a-McM"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-74.5,92.77030742190215 C8.370513405812147,92.77030742190215 8.370513405812147,-16.229692578097854 91.2410268116243,-16.229692578097854"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="gaNQ1Peug0eiN0Bfxhtgw"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-74.5,92.77030742190215 C8.370513405812147,92.77030742190215 8.370513405812147,37.770307421902146 91.2410268116243,37.770307421902146"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="351utcB2QNjRmDe5bmcD1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-74.5,92.77030742190215 C8.370513405812147,92.77030742190215 8.370513405812147,91.77030742190215 91.2410268116243,91.77030742190215"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="lupNr9zUQ0sXyzPBxcglQ"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-74.5,92.77030742190215 C8.370513405812147,92.77030742190215 8.370513405812147,145.77030742190215 91.2410268116243,145.77030742190215"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="2IVWwbU20VSU47qjiVU-f"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-74.5,92.77030742190215 C8.370513405812147,92.77030742190215 8.370513405812147,199.77030742190215 91.2410268116243,199.77030742190215"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="9MbeqIRipRgbe34jwalxo"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d=""
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="8cshqMXb08BgNWbrVWNgN"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d=""
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="Qstlhy-gNuV1VlBRCpt-K"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d=""
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="ozlBen25ObLyQg-WHLdvh"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d=""
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="BY88vn8qizAFo0cUhDok2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d=""
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="hJleHhdVrlYr3XH62NbiP"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d=""
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="eFYSD5KybBoY_PcuN6Ol2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-229.5,92.77030742190215 C-329.1907109308811,92.77030742190215 -329.1907109308811,284.77030742190215 -428.8814218617622,284.77030742190215"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-VlNNwIEDWqQXtqkHWJYzCy2-yWG2VUkaF5IJVVut6AiSyz1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M-515.3814218617622,260.27030742190215 C-515.3814218617622,243.89290034133012 -515.3814218617622,243.89290034133012 -515.3814218617622,227.5154932607581"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-yWG2VUkaF5IJVVut6AiSyw2-mH_qff8R7R6eLQ1tPHLgGx1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-188.18467266956964,334.22214459475447 C-149.9346726695696,334.22214459475447 -149.9346726695696,280.22214459475447 -111.68467266956958,280.22214459475447"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-ZhJhf1M2OphYbEmduFq-9z2-YFjzPKWDwzrgk2HUX952Ly1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-188.18467266956964,334.22214459475447 C-149.9346726695696,334.22214459475447 -149.9346726695696,334.22214459475447 -111.68467266956958,334.22214459475447"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-ZhJhf1M2OphYbEmduFq-9z2-dXeYVMXv-3MRQ1ovOUuJWy2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-188.18467266956964,334.22214459475447 C-149.9346726695696,334.22214459475447 -149.9346726695696,388.22214459475447 -111.68467266956958,388.22214459475447"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-ZhJhf1M2OphYbEmduFq-9z2-TKtWmArHn7elXRJdG6lDQy1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-315.18467266956964,334.22214459475447 C-372.0330472656659,334.22214459475447 -372.0330472656659,284.77030742190215 -428.8814218617622,284.77030742190215"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-ZhJhf1M2OphYbEmduFq-9y2-yWG2VUkaF5IJVVut6AiSyz1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M-252.68467266956958,462.5154932607581 C-252.68467266956958,410.61881892775625 -251.68467266956964,410.61881892775625 -251.68467266956964,358.72214459475447"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-ODcfFEorkfJNupoQygM53w2-ZhJhf1M2OphYbEmduFq-9x1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M-316.1846726695696,487.0154932607581 C-360.746123640521,487.0154932607581 -360.746123640521,433.22214459475447 -405.3075746114723,433.22214459475447"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-ODcfFEorkfJNupoQygM53y2-wQSjQqwKHfn5RGPk34BWIz1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-316.1846726695696,487.0154932607581 C-360.746123640521,487.0154932607581 -360.746123640521,487.22214459475447 -405.3075746114723,487.22214459475447"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-ODcfFEorkfJNupoQygM53y2-0MAogsAID9R04R5TTO2Qaz2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-316.1846726695696,487.0154932607581 C-360.746123640521,487.0154932607581 -360.746123640521,541.2221445947545 -405.3075746114723,541.2221445947545"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-ODcfFEorkfJNupoQygM53y2-A4brX0efjZ0FFPTB4r6U0z1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-189.18467266956958,487.0154932607581 C-139.14519451229208,487.0154932607581 -139.14519451229208,487.22214459475447 -89.10571635501458,487.22214459475447"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-ODcfFEorkfJNupoQygM53z2-NIY7c4TQEEHx0hATu-k5Cy2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M157.89428364498542,487.22214459475447 C201.39428364498542,487.22214459475447 201.39428364498542,487.0154932607581 244.89428364498542,487.0154932607581"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-NIY7c4TQEEHx0hATu-k5Cz2-MXnFhZlNB1zTsBFDyni9Hy1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M34.39428364498542,511.72214459475447 C34.39428364498542,532.7221445947545 34.39428364498542,532.7221445947545 34.39428364498542,553.7221445947545"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-NIY7c4TQEEHx0hATu-k5Cx2-R_I4SGYqLk5zze5I1zS_Ew1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M321.3942836449854,462.5154932607581 C321.3942836449854,440.00321300127484 321.3942836449854,440.00321300127484 321.3942836449854,417.49093274179154"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-MXnFhZlNB1zTsBFDyni9Hw2-DILBiQp7WWgSZ5hhtDW6Ax2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M321.3942836449854,511.5154932607581 C321.3942836449854,589.1944765588863 241.14428364498542,666.8734598570146 160.89428364498542,666.8734598570146"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-MXnFhZlNB1zTsBFDyni9Hx2-IqvS1V-98cxko3e9sBQgPz1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M-41.10571635501458,666.8734598570146 C-76.30595986599968,666.8734598570146 -76.30595986599968,665.2248298360628 -111.50620337698479,665.2248298360628"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-IqvS1V-98cxko3e9sBQgPy2-SLxA5qJFp_28TRzr1BjxZz2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-41.10571635501458,666.8734598570146 C-76.30595986599968,666.8734598570146 -76.30595986599968,611.2248298360628 -111.50620337698479,611.2248298360628"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-IqvS1V-98cxko3e9sBQgPy2-ib_FHinhrw8VuSet-xMF7z2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-41.10571635501458,666.8734598570146 C-76.30595986599968,666.8734598570146 -76.30595986599968,719.2248298360628 -111.50620337698479,719.2248298360628"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-IqvS1V-98cxko3e9sBQgPy2-yrq3nOwFREzl-9EKnpU-ez1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M59.89428364498542,691.3734598570146 C59.89428364498542,754.0491448465386 59.89428364498542,754.0491448465386 59.89428364498542,816.7248298360628"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-IqvS1V-98cxko3e9sBQgPx2-eXezX7CVNyC1RuyU_I4yPw1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M160.89428364498542,841.2248298360628 C216.29335451675655,841.2248298360628 216.29335451675655,817.2248298360628 271.6924253885277,817.2248298360628"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-eXezX7CVNyC1RuyU_I4yPz2--bHFIiXnoUQSov64WI9yoy1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M160.89428364498542,841.2248298360628 C216.29335451675655,841.2248298360628 216.29335451675655,709.2248298360628 271.6924253885277,709.2248298360628"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-eXezX7CVNyC1RuyU_I4yPz2-tG5v3O4lNIFc2uCnacPaky2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M160.89428364498542,841.2248298360628 C216.29335451675655,841.2248298360628 216.29335451675655,763.2248298360628 271.6924253885277,763.2248298360628"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-eXezX7CVNyC1RuyU_I4yPz2-ERAdwL1G9M1bnx-fOm5ZAy1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M160.89428364498542,841.2248298360628 C216.29335451675655,841.2248298360628 216.29335451675655,871.2248298360628 271.6924253885277,871.2248298360628"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-eXezX7CVNyC1RuyU_I4yPz2-ZR-qZ2Lcbu3FtqaMd3wM4y1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M160.89428364498542,841.2248298360628 C216.29335451675655,841.2248298360628 216.29335451675655,925.2248298360628 271.6924253885277,925.2248298360628"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-eXezX7CVNyC1RuyU_I4yPz2-DxOSKnqAjZOPP-dq_U7oPy2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M160.89428364498542,841.2248298360628 C216.29335451675655,841.2248298360628 216.29335451675655,979.2248298360628 271.6924253885277,979.2248298360628"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-eXezX7CVNyC1RuyU_I4yPz2-N5DCb6bDfgUnSdHPLYY4gy1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-41.10571635501458,841.2248298360628 C-159.40209575443515,841.2248298360628 -159.40209575443515,842.2248298360628 -277.6984751538557,842.2248298360628"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-eXezX7CVNyC1RuyU_I4yPy2-XDTD8el6OwuQ55wC-X4iVz1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M-448.6984751538557,842.2248298360628 C-477.6984751538557,842.2248298360628 -477.6984751538557,842.2248298360628 -506.6984751538557,842.2248298360628"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-XDTD8el6OwuQ55wC-X4iVy2-eghnfG4p7i-EDWfp3CQXCz2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-363.1984751538557,866.7248298360628 C-363.1984751538557,903.0491448465386 -363.1984751538557,903.0491448465386 -363.1984751538557,939.3734598570145"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-XDTD8el6OwuQ55wC-X4iVx2-nPg_YWpMJtlhU2t2UD_6Bw1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M-506.6984751538557,963.8734598570145 C-478.9484751538557,963.8734598570145 -478.9484751538557,963.8734598570145 -451.1984751538557,963.8734598570145"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-dRDmS072xeNLX7p_X565wz2-nPg_YWpMJtlhU2t2UD_6By1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-275.1984751538557,963.8734598570145 C-237.44384366070562,963.8734598570145 -237.44384366070562,963.8734598570145 -199.68921216755552,963.8734598570145"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-nPg_YWpMJtlhU2t2UD_6Bz2-UTW1pP59dUehuf0zeHXqLy2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M241.39428364498542,1233.4097604780045 C208.7544118654743,1233.4097604780045 208.7544118654743,1263.4097604780045 176.1145400859632,1263.4097604780045"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-i9z0stM4uKu27Cz6NIgNXy2-hkSc_1x09m7-7BO7WzlDTz1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M241.39428364498542,1233.4097604780045 C208.7544118654743,1233.4097604780045 208.7544118654743,1207.7047610770715 176.1145400859632,1207.7047610770715"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-i9z0stM4uKu27Cz6NIgNXy2-9VcGfDBBD8YcKatj4VcH1z2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-48.8854599140368,1263.4097604780045 C-99.00995122555008,1263.4097604780045 -99.00995122555008,1155.4097604780045 -149.13444253706336,1155.4097604780045"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-hkSc_1x09m7-7BO7WzlDTy2-0Awx3zEI5_gYEIrD7IVX6z2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-48.8854599140368,1263.4097604780045 C-98.20816887490702,1263.4097604780045 -98.20816887490702,1209.969247596049 -147.53087783577723,1209.969247596049"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-hkSc_1x09m7-7BO7WzlDTy2-4W7UXfdKIUsm1bUrjdTVTz1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-48.8854599140368,1263.4097604780045 C-99.00995122555008,1263.4097604780045 -99.00995122555008,1263.4097604780045 -149.13444253706336,1263.4097604780045"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-hkSc_1x09m7-7BO7WzlDTy2-twufEtHgxcRUWAUQ9bXusz1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-48.8854599140368,1263.4097604780045 C-99.00995122555008,1263.4097604780045 -99.00995122555008,1317.4097604780045 -149.13444253706336,1317.4097604780045"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-hkSc_1x09m7-7BO7WzlDTy2-sCjErk7rfWAUvhl8Kfm3nz1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-48.8854599140368,1263.4097604780045 C-99.00995122555008,1263.4097604780045 -99.00995122555008,1371.4097604780045 -149.13444253706336,1371.4097604780045"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-hkSc_1x09m7-7BO7WzlDTy2-NS-hwaWa5ebSmNNRoxFDpz2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M10.310787832444475,963.8734598570145 C165.85253573871495,963.8734598570145 321.3942836449854,1086.3916101675095 321.3942836449854,1208.9097604780045"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-UTW1pP59dUehuf0zeHXqLz2-i9z0stM4uKu27Cz6NIgNXw1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M321.3942836449854,1257.9097604780045 C321.3942836449854,1326.8088605615433 321.3942836449854,1326.8088605615433 321.3942836449854,1395.707960645082"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-i9z0stM4uKu27Cz6NIgNXx2-igg4_hb3XE3vuvY8ufV-4w2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M321.3942836449854,1446.707960645082 C321.3942836449854,1460.5009732275043 321.3942836449854,1460.5009732275043 321.3942836449854,1474.2939858099264"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-igg4_hb3XE3vuvY8ufV-4x2-jramLk8FGuaEH4YpHIyZTw2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M241.39428364498542,1421.207960645082 C189.51303996498194,1421.207960645082 189.51303996498194,1368.600267415748 137.63179628497846,1368.600267415748"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-igg4_hb3XE3vuvY8ufV-4y2-g5itUjgRXd9vs9ujHezFlz1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M241.39428364498542,1421.207960645082 C151.95146374045177,1421.207960645082 151.95146374045177,1508.7610367386817 62.50864383591812,1508.7610367386817"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-igg4_hb3XE3vuvY8ufV-4y2-U5mD5FmVx7VWeKxDpQxB5z1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M-530.4418542150819,1384.2280876674367 C-530.4418542150819,1336.250649680947 -528.9418542150819,1336.250649680947 -528.9418542150819,1288.2732116944574"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-RDWbG3Iui6IPgp0shvXtgw2-JanR7I_lNnUCXhCMGLdn-x2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-267.4913561640819,1508.7610367386817 C-343.46660518958186,1508.7610367386817 -343.46660518958186,1408.7280876674367 -419.4418542150819,1408.7280876674367"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-U5mD5FmVx7VWeKxDpQxB5y2-RDWbG3Iui6IPgp0shvXtgz1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M-530.4418542150819,1433.2280876674367 C-530.4418542150819,1530.9426895617519 -530.4418542150819,1530.9426895617519 -530.4418542150819,1628.657291456067"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-RDWbG3Iui6IPgp0shvXtgx2-ruoFa3M4bUE3Dg6GXSiUIw1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M-530.4418542150819,1677.657291456067 C-530.4418542150819,1696.654856464912 -530.4418542150819,1696.654856464912 -530.4418542150819,1715.6524214737567"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-ruoFa3M4bUE3Dg6GXSiUIx2-Hk8AVonOd693_y1sykPqdw1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-417.4418542150819,1653.157291456067 C-356.8764447331388,1653.157291456067 -356.8764447331388,1653.157291456067 -296.3110352511957,1653.157291456067"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-ruoFa3M4bUE3Dg6GXSiUIz2-hwPOGT0-duy3KfI8QaEwFy2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M-212.31103525119568,1677.657291456067 C-212.31103525119568,1691.6076220073728 -212.31103525119568,1691.6076220073728 -212.31103525119568,1705.5579525586788"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-hwPOGT0-duy3KfI8QaEwFx2-0asdhvwBH3gn-ercktV7Aw1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M224.74458345301082,1801.1524214737567 C244.86972300746953,1801.1524214737567 244.86972300746953,1801.1524214737567 264.99486256192824,1801.1524214737567"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-3TE_iYvbklXK0be-5f2M7z2-BBsXxkbbEG-gnbM1xXKrjy1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M224.74458345301082,1855.1524214737567 C244.86972300746953,1855.1524214737567 244.86972300746953,1855.1524214737567 264.99486256192824,1855.1524214737567"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-OL8I6nOZ8hGGWmtxg_Mv8z2-P4st_telfCwKLSAU2WsQPy1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-220.7582952055722,1936.2381074587565 C-220.7582952055722,1921.8060088070592 -220.7582952055722,1921.8060088070592 -220.7582952055722,1907.3739101553622"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-L7AllJfKvClaam3y-u6DPw2-0moPO23ol33WsjVXSpTGfx2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M165.1145400859632,2171.8894186454863 C208.51918056718768,2171.8894186454863 208.51918056718768,2172.333490040384 251.92382104841215,2172.333490040384"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-n0q32YhWEIAUwbGXexoqVz2-VOGKiG2EZVfCBAaa7Df0Wy2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M-135.65026904256626,2478.255580716903 C-175.59341951836555,2478.255580716903 -175.59341951836555,2422.029159876233 -215.53656999416484,2422.029159876233"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-KMA7NkxFbPoUDtFnGBFnjy2-mQHpSyMR4Rra4mqAslgiSz2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-135.65026904256626,2478.255580716903 C-176.09341951836555,2478.255580716903 -176.09341951836555,2476.029159876233 -216.53656999416484,2476.029159876233"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-KMA7NkxFbPoUDtFnGBFnjy2-GJctl0tVXe4B70s35RkLTz1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-135.65026904256626,2478.255580716903 C-176.09341951836555,2478.255580716903 -176.09341951836555,2530.029159876233 -216.53656999416484,2530.029159876233"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-KMA7NkxFbPoUDtFnGBFnjy2-2MRvAK9G9RGM_auWytcKhz1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-58.650269042566265,2502.755580716903 C-58.650269042566265,2563.9594116963144 -60.194404577174225,2563.9594116963144 -60.194404577174225,2625.163242675726"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-KMA7NkxFbPoUDtFnGBFnjx2-0vLaVNJaJSHZ_bHli6Qzsw1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M-20.5,1827.6524214737567 C-20.5,1894.1952644662565 -81.1291476027861,1960.7381074587565 -141.7582952055722,1960.7381074587565"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-Cxspmb14_0i1tfw-ZLxEux2-L7AllJfKvClaam3y-u6DPz2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M-128.31103525119568,1653.157291456067 C-74.40551762559784,1653.157291456067 -20.5,1715.904856464912 -20.5,1778.6524214737567"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-hwPOGT0-duy3KfI8QaEwFz2-Cxspmb14_0i1tfw-ZLxEuw1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M33.5,1803.1524214737567 C76.62229172650541,1803.1524214737567 76.62229172650541,1691.5301235678273 119.74458345301082,1691.5301235678273"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-Cxspmb14_0i1tfw-ZLxEuz2-SGDf_rbfmFSHlxI-Czzlzy1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M33.5,1803.1524214737567 C76.62229172650541,1803.1524214737567 76.62229172650541,1747.1524214737567 119.74458345301082,1747.1524214737567"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-Cxspmb14_0i1tfw-ZLxEuz2-k6rp6Ua9qUEW_DA_fOg5uy1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M33.5,1803.1524214737567 C76.62229172650541,1803.1524214737567 76.62229172650541,1801.1524214737567 119.74458345301082,1801.1524214737567"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-Cxspmb14_0i1tfw-ZLxEuz2-3TE_iYvbklXK0be-5f2M7y1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M33.5,1803.1524214737567 C76.62229172650541,1803.1524214737567 76.62229172650541,1855.1524214737567 119.74458345301082,1855.1524214737567"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-Cxspmb14_0i1tfw-ZLxEuz2-OL8I6nOZ8hGGWmtxg_Mv8y1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M219.74458345301082,1691.5301235678273 C242.36972300746953,1691.5301235678273 242.36972300746953,1691.5301235678273 264.99486256192824,1691.5301235678273"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-SGDf_rbfmFSHlxI-Czzlzz2-wA2fSYsbBYU02VJXAvUz8y1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M 219.74458345301082,1691.5301235678273L 264.99486256192824,1747.1524214737567"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-SGDf_rbfmFSHlxI-Czzlzz2-KJRkrFZIihCUBrOf579EUy1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-220.7582952055722,1985.2381074587565 C-220.7582952055722,2066.3137630521214 -220.7582952055722,2066.3137630521214 -220.7582952055722,2147.3894186454863"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-L7AllJfKvClaam3y-u6DPx2-PoM77O2OtxPELxfrW1wtlw2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M-220.7582952055722,2196.3894186454863 C-220.7582952055722,2224.611454342935 -220.7582952055722,2224.611454342935 -220.7582952055722,2252.833490040384"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-PoM77O2OtxPELxfrW1wtlx2-mB3hZvAfRr6kCEbF6t-yzw1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-299.7582952055722,2171.8894186454863 C-362.15600149104773,2171.8894186454863 -362.15600149104773,2133.5487446425846 -424.5537077765232,2133.5487446425846"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-PoM77O2OtxPELxfrW1wtly2-3_sJHKTogkDoCjR518-OLz1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M-141.7582952055722,2171.8894186454863 C-95.3218775598045,2171.8894186454863 -95.3218775598045,2171.8894186454863 -48.8854599140368,2171.8894186454863"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-PoM77O2OtxPELxfrW1wtlz2-n0q32YhWEIAUwbGXexoqVy1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M 219.74458345301082,1691.5301235678273L 264.99486256192824,1638.5301235678273"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-SGDf_rbfmFSHlxI-Czzlzz2-zNFYAJaSq0YZXL5Rpx1NXy1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M58.1145400859632,2147.3894186454863 C58.1145400859632,2127.3861937809 58.1145400859632,2127.3861937809 58.1145400859632,2107.382968916314"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-n0q32YhWEIAUwbGXexoqVw2-io0RHJWIcVxDhcYkV9d38x1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M58.1145400859632,2196.3894186454863 C58.1145400859632,2221.6997093227433 58.1145400859632,2221.6997093227433 58.1145400859632,2247.01"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-n0q32YhWEIAUwbGXexoqVx2-XWJxV42Dpu2D3xDK10Pn3w2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M323.92382104841215,2147.833490040384 C323.92382104841215,2125.111454342935 322.92382104841215,2125.111454342935 322.92382104841215,2102.3894186454863"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-VOGKiG2EZVfCBAaa7Df0Ww2-xmRv6-L45m5MDpHmdHFCLx1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+            <path
+              d="M323.92382104841215 2196.833490040384L323.92382104841215 2216.833490040384L 323.92382104841215,2478.255580716903Q 323.92382104841215,2478.255580716903 323.92382104841215,2478.255580716903L38.349730957433735 2478.255580716903L18.349730957433735 2478.255580716903"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-VOGKiG2EZVfCBAaa7Df0Wx2-KMA7NkxFbPoUDtFnGBFnjz1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0"></path>
+            <path
+              d="M-299.7582952055722,2171.8894186454863 C-363.2829349085223,2171.8894186454863 -363.2829349085223,2279.6757757262712 -426.8075746114723,2279.6757757262712"
+              fill="none"
+              stroke="#2b78e4"
+              stroke-width="3.5"
+              data-edge-id="reactflow__edge-PoM77O2OtxPELxfrW1wtly2-raoa-75p_DyBAycvy3yVvz1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="0.8 8"></path>
+          </svg>
+        </div>
+      </section>
+    </div>
+    <div class="mb-10 flex justify-end">
+      <button
+        class="bg-garisbiru text-white px-5 py-2 rounded-md cursor-pointer">
+        <a href="/Roadmap/Roadmap/backend.html">Backend Roadmap -></a>
+      </button>
+    </div>
+  </body>
+</html>
