@@ -42,7 +42,7 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
   }
 
   try {
-    const response = await axios.post("https://roadmap-sandy.vercel.app/api/login", {
+    const response = await axios.post("http://localhost:3002/api/login", {
       name: username,
     });
 
@@ -66,7 +66,6 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
   document.getElementById("roadmap").classList.add("hidden");
   document.getElementById("container-login").classList.remove("hidden");
 });
-
 
 document.getElementById("logoutBtn").addEventListener("click", async () => {
   localStorage.removeItem("userId");
@@ -1223,7 +1222,7 @@ async function loadMaterials13(category) {
     }
 
     if (material.id === 39) {
-      circleCY= circleCY + 55;
+      circleCY = circleCY + 55;
     } else if (material.id === 40) {
       circleCY = circleCY + 110;
     }
@@ -1336,43 +1335,40 @@ async function loadMaterials14(category) {
     } else if (material.id === 43) {
       rectX = baseX + spacingX;
       rectY = baseY;
-      circleCX = circleCX + 85
-    }
-
-    else if (material.id === 41) {
+      circleCX = circleCX + 85;
+    } else if (material.id === 41) {
       rectX = baseX;
-      rectY = baseY - spacingY; 
-      circleCY= circleCY - 55;
-      circleCX = circleCX + 85
+      rectY = baseY - spacingY;
+      circleCY = circleCY - 55;
+      circleCX = circleCX + 85;
     } else if (material.id === 44) {
       rectX = baseX;
       rectY = baseY + spacingY;
       circleCY = circleCY + 55;
-      circleCX = circleCX - 125
+      circleCX = circleCX - 125;
     } else if (material.id === 45) {
       rectX = baseX;
       rectY = baseY + spacingY * 2;
       circleCY = circleCY + 110;
-      circleCX = circleCX - 125
+      circleCX = circleCX - 125;
     } else if (material.id === 46) {
       rectX = baseX;
       rectY = baseY + spacingY * 3;
       circleCY = circleCY + 165;
-      circleCX = circleCX - 125
+      circleCX = circleCX - 125;
     }
-
 
     const circle = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "circle"
     );
-    circle.setAttribute(
-      "cx",
-      material.id === 42 ? circleCX - 125 : circleCX
-    );
+    circle.setAttribute("cx", material.id === 42 ? circleCX - 125 : circleCX);
     circle.setAttribute("cy", circleCY);
     circle.setAttribute("r", circleRadius);
-    circle.setAttribute("fill", material.id === 41 || material.id === 43 ? "#874efe" : "#4f7a28");
+    circle.setAttribute(
+      "fill",
+      material.id === 41 || material.id === 43 ? "#874efe" : "#4f7a28"
+    );
     circle.setAttribute("stroke", "black");
     circle.setAttribute("stroke-width", "1.5");
 
@@ -1381,10 +1377,7 @@ async function loadMaterials14(category) {
       "http://www.w3.org/2000/svg",
       "text"
     );
-    checkText.setAttribute(
-      "x",
-      material.id === 42 ? circleCX - 125 : circleCX
-    );
+    checkText.setAttribute("x", material.id === 42 ? circleCX - 125 : circleCX);
     checkText.setAttribute("y", circleCY + 1);
     checkText.setAttribute("text-anchor", "middle");
     checkText.setAttribute("dominant-baseline", "middle");
@@ -1428,8 +1421,8 @@ async function loadMaterials14(category) {
 
     // Tambahkan ke grup SVG
     g.appendChild(rect);
-    g.appendChild(circle)
-    g.appendChild(checkText)
+    g.appendChild(circle);
+    g.appendChild(checkText);
     g.appendChild(text);
   });
 
@@ -1528,8 +1521,8 @@ async function loadMaterials15(category) {
     text.textContent = material.name;
 
     g.appendChild(rect);
-    g.appendChild(circle)
-    g.appendChild(checkText)
+    g.appendChild(circle);
+    g.appendChild(checkText);
     g.appendChild(text);
 
     rect.addEventListener("click", () => showMaterialDetails(material));
@@ -2145,28 +2138,25 @@ async function loadMaterials22(category) {
     } else if (material.id === 72) {
       rectX = baseX + spacingX;
       rectY = baseY;
-      circleCX = rectX + 95
+      circleCX = rectX + 95;
     } else if (material.id === 73) {
       rectX = baseX;
       rectY = baseY + spacingY;
-      circleCY = rectY + 22
+      circleCY = rectY + 22;
     } else if (material.id === 74) {
       rectX = baseX;
       rectY = baseY + spacingY * 2;
-      circleCY = rectY + 22
+      circleCY = rectY + 22;
     }
 
     const circle = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "circle"
     );
-    circle.setAttribute(
-      "cx",
-      circleCX
-    );
+    circle.setAttribute("cx", circleCX);
     circle.setAttribute("cy", circleCY);
     circle.setAttribute("r", circleRadius);
-    circle.setAttribute("fill", material.id === 72 ? "#874efe" : "#4f7a28" );
+    circle.setAttribute("fill", material.id === 72 ? "#874efe" : "#4f7a28");
     circle.setAttribute("stroke", "black");
     circle.setAttribute("stroke-width", "1.5");
 
@@ -2175,10 +2165,7 @@ async function loadMaterials22(category) {
       "http://www.w3.org/2000/svg",
       "text"
     );
-    checkText.setAttribute(
-      "x",
-      circleCX
-    );
+    checkText.setAttribute("x", circleCX);
     checkText.setAttribute("y", circleCY + 1);
     checkText.setAttribute("text-anchor", "middle");
     checkText.setAttribute("dominant-baseline", "middle");
@@ -2218,8 +2205,8 @@ async function loadMaterials22(category) {
     text.addEventListener("click", () => showMaterialDetails(material));
 
     g.appendChild(rect);
-    g.appendChild(circle)
-    g.appendChild(checkText)
+    g.appendChild(circle);
+    g.appendChild(checkText);
     g.appendChild(text);
   });
 
