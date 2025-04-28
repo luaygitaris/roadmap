@@ -2,16 +2,17 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 
-router.get("/:category", (req, res) => {
+router.get("/:category", async (req, res) => {
   const { category } = req.params;
-  pool.query(
-    "SELECT * FROM materials WHERE category = ?",
-    [category],
-    (error, results) => {
-      if (error) return res.status(500).json({ error: "Database query failed" });
-      res.json(results);
-    }
-  );
+
+  try {
+    const [results] = await pool.execute("SELECT * FROM materials WHERE category = ?", [category]);
+
+    res.json(results);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Database query failed" });
+  }
 });
 
 module.exports = router;

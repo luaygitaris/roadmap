@@ -67,17 +67,10 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
   document.getElementById("container-login").classList.remove("hidden");
 });
 
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-  localStorage.removeItem("userId");
-  userId = null;
-  document.getElementById("roadmap").classList.add("hidden");
-  document.getElementById("container-login").classList.remove("hidden");
-});
-
 // Fungsi untuk memuat materi berdasarkan kategori
 async function loadMaterials(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -173,7 +166,7 @@ async function loadMaterials(category) {
 
 async function loadMaterials2(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -266,7 +259,7 @@ async function loadMaterials2(category) {
 
 async function loadMaterials3(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -359,7 +352,7 @@ async function loadMaterials3(category) {
 
 async function loadMaterials4(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -452,7 +445,7 @@ async function loadMaterials4(category) {
 
 async function loadMaterials5(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -541,7 +534,7 @@ async function loadMaterials5(category) {
 
 async function loadMaterials6(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -633,7 +626,7 @@ async function loadMaterials6(category) {
 
 async function loadMaterials7(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -692,7 +685,7 @@ async function loadMaterials7(category) {
 
 async function loadMaterials8(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -783,7 +776,7 @@ async function loadMaterials8(category) {
 
 async function loadMaterials9(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -875,7 +868,7 @@ async function loadMaterials9(category) {
 
 async function loadMaterials10(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -967,7 +960,7 @@ async function loadMaterials10(category) {
 
 async function loadMaterials11(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -1072,7 +1065,7 @@ async function loadMaterials11(category) {
 
 async function loadMaterials12(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -1177,7 +1170,7 @@ async function loadMaterials12(category) {
 
 async function loadMaterials13(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -1302,7 +1295,7 @@ async function loadMaterials13(category) {
 
 async function loadMaterials14(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -1431,7 +1424,7 @@ async function loadMaterials14(category) {
 
 async function loadMaterials15(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -1534,7 +1527,7 @@ async function loadMaterials15(category) {
 
 async function loadMaterials16(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -1627,7 +1620,7 @@ async function loadMaterials16(category) {
 
 async function loadMaterials17(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -1720,7 +1713,7 @@ async function loadMaterials17(category) {
 
 async function loadMaterials18(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -1823,7 +1816,7 @@ async function loadMaterials18(category) {
 
 async function loadMaterials19(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -1916,7 +1909,7 @@ async function loadMaterials19(category) {
 
 async function loadMaterials20(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -2012,7 +2005,7 @@ async function loadMaterials20(category) {
 
 async function loadMaterials21(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -2105,7 +2098,7 @@ async function loadMaterials21(category) {
 
 async function loadMaterials22(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -2215,7 +2208,7 @@ async function loadMaterials22(category) {
 
 async function loadMaterials23(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -2308,7 +2301,7 @@ async function loadMaterials23(category) {
 
 async function loadMaterials24(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -2367,7 +2360,7 @@ async function loadMaterials24(category) {
 
 async function loadMaterials25(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -2460,7 +2453,7 @@ async function loadMaterials25(category) {
 
 async function loadMaterials26(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -2602,14 +2595,14 @@ function showMaterialDetails(material) {
 // Fungsi untuk memeriksa apakah materi sudah dipelajari
 async function checkProgress(materialId) {
   const response = await axios.get(
-    `http://localhost:3000/api/progress/${userId}/${materialId}`
+    `https://roadmap-sandy.vercel.app/api/progress/${userId}/${materialId}`
   );
   return response.data;
 }
 
 // Fungsi untuk menandai materi sebagai dipelajari
 async function markAsLearned(materialId) {
-  await axios.post("http://localhost:3000/api/progress", {
+  await axios.post("https://roadmap-sandy.vercel.app/api/progress", {
     userId,
     materialId,
   });

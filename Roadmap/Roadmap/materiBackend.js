@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       try {
-        const response = await axios.post("http://localhost:3000/api/login", {
+        const response = await axios.post("https://roadmap-sandy.vercel.app/api/login", {
           name: username,
         });
 
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 async function backendMateri(category) {
   try {
     const response = await axios.get(
-      `http://localhost:3000/api/materials/${category}`
+      `https://roadmap-sandy.vercel.app/api/materials/${category}`
     );
     let materials = response.data;
 
@@ -71,8 +71,6 @@ async function backendMateri(category) {
           (material.id >= 173 && material.id <= 186)
       )
       .sort((a, b) => a.id - b.id);
-
-    console.log(materials);
 
     const materialContainer = document.getElementById("backend-Materi");
     materialContainer.innerHTML = "";
@@ -299,7 +297,7 @@ async function backendMateri(category) {
 
 async function backendMateri2(category) {
   const response = await axios.get(
-    `http://localhost:3000/api/materials/${category}`
+    `https://roadmap-sandy.vercel.app/api/materials/${category}`
   );
   let materials = response.data;
 
@@ -433,7 +431,7 @@ async function backendMateri2(category) {
 async function backendMateri3(category) {
   try {
     const response = await axios.get(
-      `http://localhost:3000/api/materials/${category}`
+      `https://roadmap-sandy.vercel.app/api/materials/${category}`
     );
     let materials = response.data;
 
@@ -450,7 +448,6 @@ async function backendMateri3(category) {
       )
       .sort((a, b) => a.id - b.id);
 
-    console.log(materials);
 
     const materialContainer = document.getElementById("backend-Materi3");
     materialContainer.innerHTML = "";
@@ -614,7 +611,7 @@ async function backendMateri3(category) {
 async function backendMateri4(category) {
   try {
     const response = await axios.get(
-      `http://localhost:3000/api/materials/${category}`
+      `https://roadmap-sandy.vercel.app/api/materials/${category}`
     );
     let materials = response.data;
 
@@ -631,8 +628,6 @@ async function backendMateri4(category) {
           (material.id >= 190 && material.id <= 206)
       )
       .sort((a, b) => a.id - b.id);
-
-    console.log(materials);
 
     const materialContainer = document.getElementById("backend-Materi4");
     materialContainer.innerHTML = "";
@@ -947,14 +942,14 @@ function showMaterialDetails(material) {
 // Fungsi untuk memeriksa apakah materi sudah dipelajari
 async function checkProgress(materialId) {
   const response = await axios.get(
-    `http://localhost:3000/api/progress/${userId}/${materialId}`
+    `https://roadmap-sandy.vercel.app/api/progress/${userId}/${materialId}`
   );
   return response.data;
 }
 
 // Fungsi untuk menandai materi sebagai dipelajari
 async function markAsLearned(materialId) {
-  await axios.post("http://localhost:3000/api/progress", {
+  await axios.post("https://roadmap-sandy.vercel.app/api/progress", {
     userId,
     materialId,
   });

@@ -1,15 +1,19 @@
-const mysql = require('serverless-mysql');
+const mysql = require('mysql2/promise');
 const { config } = require('dotenv');
 
 config();
 
-const db = mysql({
-  config: {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE
-  }
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  connectTimeout: 100000,
+  acquireTimeout: 100000,
+  timeout: 10000,
 });
 
-module.exports = db;
+module.exports = pool;
