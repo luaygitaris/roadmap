@@ -2550,47 +2550,79 @@ function showMaterialDetails(material) {
   popup.innerHTML = `
     <div class="relative">
       <button
-            id="close-detail-btn"
-            class="absolute top-0 right-0 text-red-500">
-            <i class='bx bxs-x-square text-[15px] lg:text-[30px]'></i>
+        id="close-detail-btn"
+        class="absolute top-0 right-0 text-red-500">
+        <i class='bx bxs-x-square text-[15px] lg:text-[30px]'></i>
       </button>
-      <h2 class="text-[8px] md:text-sm lg:text-lg font-semibold mb-1 lg:mb-2">${
-        material.name
-      }</h2>
-      <p class="text-[8px] md:text-[12px] lg:text-sm text-gray-700 mb-1 lg:mb-4">${
-        material.description || "No description available"
-      }</p>
-      <button id="mark-learned-btn" class="bg-green-500 hover:bg-green-600 text-white py-1 px-1 lg:px-4 rounded text-[8px] md:text[12px] lg:text-sm">
-        Mark as Learned
-      </button>
+      <h2 class="text-[8px] md:text-sm lg:text-lg font-semibold mb-1 lg:mb-2">
+        ${material.name}
+      </h2>
+      <p class="text-[8px] md:text-[12px] lg:text-sm text-gray-700 mb-1 lg:mb-4">
+        ${material.description || "No description available"}
+      </p>
+      <div class="relative inline-block">
+        <button id="progress-btn" class="bg-gray-400 text-white py-1 px-2 lg:px-4 rounded text-[8px] md:text[12px] lg:text-sm cursor-pointer">
+          Loading...
+        </button>
+        <div id="progress-options" class="hidden absolute z-10 mt-1 bg-white border rounded shadow-md w-full text-left">
+          <div class="option px-3 py-1 hover:bg-gray-100 cursor-pointer" data-value="not learned">Not Learned</div>
+          <div class="option px-3 py-1 hover:bg-gray-100 cursor-pointer" data-value="in progress">In Progress</div>
+          <div class="option px-3 py-1 hover:bg-gray-100 cursor-pointer" data-value="learned">Learned</div>
+        </div>
+      </div>
     </div>
   `;
 
   popup.classList.remove("hidden");
 
-  // Cek progress
-  checkProgress(material.id).then((progress) => {
-    const button = document.getElementById("mark-learned-btn");
-    if (progress.status === "learned") {
-      button.textContent = "Already Learned";
-      button.disabled = true;
-      button.classList.remove("bg-green-500", "hover:bg-green-600");
-      button.classList.add("bg-gray-400", "cursor-not-allowed");
-    } else {
-      button.addEventListener("click", async () => {
-        await markAsLearned(material.id);
-        button.textContent = "Already Learned";
-        button.disabled = true;
-        button.classList.remove("bg-green-500", "hover:bg-green-600");
-        button.classList.add("bg-gray-400", "cursor-not-allowed");
-        alert("Material marked as learned!");
-      });
+  const progressBtn = document.getElementById("progress-btn");
+  const optionsMenu = document.getElementById("progress-options");
+
+  // Fungsi untuk set tampilan tombol sesuai status
+  function updateButtonStyle(status) {
+    progressBtn.textContent = status
+      .replace("not learned", "Not Learned")
+      .replace("in progress", "In Progress")
+      .replace("learned", "Learned");
+
+    progressBtn.classList.remove("bg-gray-400", "bg-yellow-400", "bg-green-500");
+
+    if (status === "not learned") {
+      progressBtn.classList.add("bg-gray-400");
+    } else if (status === "in progress") {
+      progressBtn.classList.add("bg-yellow-400");
+    } else if (status === "learned") {
+      progressBtn.classList.add("bg-green-500");
+    }
+  }
+
+  // Cek progress awal
+  checkProgress(material.id).then((progressData) => {
+    const currentProgress = progressData.progress || "not learned";
+    updateButtonStyle(currentProgress);
+  });
+
+  // Toggle menu saat tombol diklik
+  progressBtn.addEventListener("click", () => {
+    optionsMenu.classList.toggle("hidden");
+  });
+
+  // Saat opsi dipilih
+  optionsMenu.addEventListener("click", async (e) => {
+    if (e.target.classList.contains("option")) {
+      const selectedProgress = e.target.getAttribute("data-value");
+      await updateProgress(material.id, selectedProgress);
+      updateButtonStyle(selectedProgress);
+      optionsMenu.classList.add("hidden");
+      alert(`Progress updated to "${selectedProgress}"`);
     }
   });
+
   document.getElementById("close-detail-btn").addEventListener("click", () => {
     popup.classList.add("hidden");
   });
 }
+
 
 // Fungsi untuk memeriksa apakah materi sudah dipelajari
 async function checkProgress(materialId) {
@@ -2601,9 +2633,11 @@ async function checkProgress(materialId) {
 }
 
 // Fungsi untuk menandai materi sebagai dipelajari
-async function markAsLearned(materialId) {
+async function updateProgress(materialId, progress) {
   await axios.post("https://roadmap-sandy.vercel.app/api/progress", {
     userId,
     materialId,
+    progress,
   });
 }
+
