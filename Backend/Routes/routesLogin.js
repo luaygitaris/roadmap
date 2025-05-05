@@ -3,10 +3,14 @@ const router = express.Router();
 const pool = require("../db"); 
 
 router.post("/", async (req, res) => {
-  const { name } = req.body;
+  const { name, password } = req.body;
+
+  if (!name || !password) {
+    return res.status(400).json({ error: "Name and password are required" });
+  }
 
   try {
-    const [results] = await pool.execute("SELECT * FROM users WHERE name = ?", [name]);
+    const [results] = await pool.execute("SELECT * FROM users WHERE name = ? AND password = ?", [name, password]);
 
     if (results.length > 0) {
       const user = results[0];
